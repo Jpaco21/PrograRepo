@@ -1,0 +1,6 @@
+Nombre: Jose Paco
+Carrera: Ingenieria de Sistemas e Innovacion Digital
+Materia: PFU-111 Programacion Fundamental
+Este es mi primer repositorio en GitHub
+Fecha: 06/10/2026
+
