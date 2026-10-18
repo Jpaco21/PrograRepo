@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 static class Validador
 {
@@ -75,9 +76,10 @@ class Program
             Console.WriteLine("===== TAREA 5 =====");
             Console.WriteLine("1. Registro de notas");
             Console.WriteLine("2. Carrito de compras");
+            Console.WriteLine("3. Calculadora con historial");
             Console.WriteLine("0. Salir");
 
-            opcion = Validador.LeerEntero("Elige una opcion: ", 0, 2);
+            opcion = Validador.LeerEntero("Elige una opcion: ", 0, 3);
 
             if (opcion == 1)
             {
@@ -86,6 +88,10 @@ class Program
             else if (opcion == 2)
             {
                 Ejercicio2();
+            }
+            else if (opcion == 3)
+            {
+                Ejercicio3();
             }
 
         } while (opcion != 0);
@@ -148,5 +154,60 @@ class Program
         Console.WriteLine();
         Console.WriteLine("Productos distintos: " + productos);
         Console.WriteLine("Total a pagar: " + total + " Bs");
+    }
+
+    static void Ejercicio3()
+    {
+        Stack<int> resultados = new Stack<int>();
+        int opcion;
+
+        do
+        {
+            Console.WriteLine();
+            Console.WriteLine("===== CALCULADORA CON HISTORIAL =====");
+            Console.WriteLine("1. Sumar dos numeros");
+            Console.WriteLine("2. Ver ultimo resultado");
+            Console.WriteLine("3. Borrar ultimo resultado");
+            Console.WriteLine("4. Salir");
+
+            opcion = Validador.LeerEntero("Elige una opcion: ", 1, 4);
+
+            if (opcion == 1)
+            {
+                int a = Validador.LeerEntero("Primer numero (-1000 a 1000): ", -1000, 1000);
+                int b = Validador.LeerEntero("Segundo numero (-1000 a 1000): ", -1000, 1000);
+
+                int resultado = a + b;
+
+                Console.WriteLine(a + " + " + b + " = " + resultado);
+
+                resultados.Push(resultado);
+            }
+            else if (opcion == 2)
+            {
+                if (resultados.Count > 0)
+                {
+                    Console.WriteLine("Ultimo resultado: " + resultados.Peek());
+                }
+                else
+                {
+                    Console.WriteLine("No hay resultados");
+                }
+            }
+            else if (opcion == 3)
+            {
+                if (resultados.Count > 0)
+                {
+                    Console.WriteLine("Se borro: " + resultados.Pop());
+                }
+                else
+                {
+                    Console.WriteLine("No hay resultados para borrar");
+                }
+            }
+
+        } while (opcion != 4);
+
+        Console.WriteLine("Resultados guardados: " + resultados.Count);
     }
 }
