@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 class CuentaBancaria
 {
@@ -87,18 +88,41 @@ class Libro
     }
 }
 
+class Contacto
+{
+    private string nombre;
+    private string telefono;
+
+    public Contacto(string nombre, string telefono)
+    {
+        this.nombre = nombre;
+        this.telefono = telefono;
+    }
+
+    public string ALinea()
+    {
+        return nombre + ";" + telefono;
+    }
+
+    public void Mostrar()
+    {
+        Console.WriteLine("Nombre: " + nombre + " | Telefono: " + telefono);
+    }
+}
+
 class Program
 {
     static void Main()
     {
         int opcion = 0;
 
-        while (opcion != 3)
+        while (opcion != 4)
         {
             Console.WriteLine("\n===== TAREA 7 =====");
             Console.WriteLine("1. Ejercicio 1: Cuenta bancaria");
             Console.WriteLine("2. Ejercicio 2: Biblioteca");
-            Console.WriteLine("3. Salir");
+            Console.WriteLine("3. Ejercicio 3: Contactos");
+            Console.WriteLine("4. Salir");
             Console.Write("Seleccione una opcion: ");
 
             if (!int.TryParse(Console.ReadLine(), out opcion))
@@ -116,7 +140,11 @@ class Program
             {
                 Ejercicio2();
             }
-            else if (opcion != 3)
+            else if (opcion == 3)
+            {
+                Ejercicio3();
+            }
+            else if (opcion != 4)
             {
                 Console.WriteLine("Opcion no valida.");
             }
@@ -163,26 +191,18 @@ class Program
                 Console.Write("Monto a depositar: ");
 
                 if (decimal.TryParse(Console.ReadLine(), out decimal monto))
-                {
                     cuenta.Depositar(monto);
-                }
                 else
-                {
                     Console.WriteLine("Ingrese un monto valido.");
-                }
             }
             else if (opcion == 2)
             {
                 Console.Write("Monto a retirar: ");
 
                 if (decimal.TryParse(Console.ReadLine(), out decimal monto))
-                {
                     cuenta.Retirar(monto);
-                }
                 else
-                {
                     Console.WriteLine("Ingrese un monto valido.");
-                }
             }
             else if (opcion == 3)
             {
@@ -206,9 +226,7 @@ class Program
         Console.WriteLine("\n--- Libros disponibles ---");
 
         for (int i = 0; i < libros.Length; i = i + 1)
-        {
             Console.WriteLine(libros[i].MostrarEstado());
-        }
 
         for (int i = 0; i < 2; i = i + 1)
         {
@@ -220,36 +238,72 @@ class Program
             {
                 string tituloLibro = libros[j].MostrarEstado().Split('-')[0].Trim();
 
-                if (tituloBuscado.Equals(
-                    tituloLibro,
-                    StringComparison.OrdinalIgnoreCase))
+                if (tituloBuscado.Equals(tituloLibro, StringComparison.OrdinalIgnoreCase))
                 {
                     encontrado = true;
 
                     if (libros[j].Prestar())
-                    {
                         Console.WriteLine("Libro prestado correctamente.");
-                    }
                     else
-                    {
                         Console.WriteLine("El libro ya esta prestado.");
-                    }
 
                     break;
                 }
             }
 
             if (!encontrado)
-            {
                 Console.WriteLine("Libro no encontrado.");
-            }
         }
 
         Console.WriteLine("\n--- Estado final de los libros ---");
 
         for (int i = 0; i < libros.Length; i = i + 1)
-        {
             Console.WriteLine(libros[i].MostrarEstado());
+    }
+
+    static void Ejercicio3()
+    {
+        Console.Write("Cuantos contactos desea registrar? ");
+
+        if (!int.TryParse(Console.ReadLine(), out int cantidad) || cantidad <= 0)
+        {
+            Console.WriteLine("Ingrese una cantidad valida.");
+            return;
+        }
+
+        Contacto[] contactos = new Contacto[cantidad];
+        string[] lineas = new string[cantidad];
+
+        for (int i = 0; i < cantidad; i = i + 1)
+        {
+            Console.WriteLine("\nContacto " + (i + 1));
+
+            Console.Write("Nombre: ");
+            string nombre = Console.ReadLine() ?? "";
+
+            Console.Write("Telefono: ");
+            string telefono = Console.ReadLine() ?? "";
+
+            contactos[i] = new Contacto(nombre, telefono);
+            lineas[i] = contactos[i].ALinea();
+        }
+
+        File.WriteAllLines("contactos.txt", lineas);
+
+        Console.WriteLine("\nContactos guardados en contactos.txt.");
+        Console.WriteLine("\n--- Contactos leidos del archivo ---");
+
+        string[] contactosGuardados = File.ReadAllLines("contactos.txt");
+
+        foreach (string linea in contactosGuardados)
+        {
+            string[] datos = linea.Split(';');
+
+            if (datos.Length == 2)
+            {
+                Contacto contacto = new Contacto(datos[0], datos[1]);
+                contacto.Mostrar();
+            }
         }
     }
 }
