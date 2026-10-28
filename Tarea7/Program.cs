@@ -8,7 +8,7 @@ class CuentaBancaria
     public CuentaBancaria(string titular, decimal saldoInicial)
     {
         this.titular = titular;
-        this.saldo = saldoInicial;
+        saldo = saldoInicial;
     }
 
     public decimal Saldo
@@ -54,17 +54,51 @@ class CuentaBancaria
     }
 }
 
+class Libro
+{
+    private string titulo;
+    private bool disponible;
+
+    public Libro(string titulo)
+    {
+        this.titulo = titulo;
+        disponible = true;
+    }
+
+    public bool Prestar()
+    {
+        if (disponible)
+        {
+            disponible = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    public string MostrarEstado()
+    {
+        if (disponible)
+        {
+            return titulo + " - Disponible";
+        }
+
+        return titulo + " - Prestado";
+    }
+}
+
 class Program
 {
     static void Main()
     {
         int opcion = 0;
 
-        while (opcion != 2)
+        while (opcion != 3)
         {
             Console.WriteLine("\n===== TAREA 7 =====");
             Console.WriteLine("1. Ejercicio 1: Cuenta bancaria");
-            Console.WriteLine("2. Salir");
+            Console.WriteLine("2. Ejercicio 2: Biblioteca");
+            Console.WriteLine("3. Salir");
             Console.Write("Seleccione una opcion: ");
 
             if (!int.TryParse(Console.ReadLine(), out opcion))
@@ -80,13 +114,15 @@ class Program
             }
             else if (opcion == 2)
             {
-                Console.WriteLine("Programa finalizado.");
+                Ejercicio2();
             }
-            else
+            else if (opcion != 3)
             {
                 Console.WriteLine("Opcion no valida.");
             }
         }
+
+        Console.WriteLine("Programa finalizado.");
     }
 
     static void Ejercicio1()
@@ -104,7 +140,6 @@ class Program
         }
 
         CuentaBancaria cuenta = new CuentaBancaria(titular, saldoInicial);
-
         int opcion = 0;
 
         while (opcion != 4)
@@ -157,6 +192,64 @@ class Program
             {
                 Console.WriteLine("Opcion no valida.");
             }
+        }
+    }
+
+    static void Ejercicio2()
+    {
+        Libro[] libros = new Libro[3];
+
+        libros[0] = new Libro("El Principito");
+        libros[1] = new Libro("Don Quijote");
+        libros[2] = new Libro("Rayuela");
+
+        Console.WriteLine("\n--- Libros disponibles ---");
+
+        for (int i = 0; i < libros.Length; i = i + 1)
+        {
+            Console.WriteLine(libros[i].MostrarEstado());
+        }
+
+        for (int i = 0; i < 2; i = i + 1)
+        {
+            Console.Write("\nIngrese el titulo del libro que desea prestar: ");
+            string tituloBuscado = Console.ReadLine() ?? "";
+            bool encontrado = false;
+
+            for (int j = 0; j < libros.Length; j = j + 1)
+            {
+                string tituloLibro = libros[j].MostrarEstado().Split('-')[0].Trim();
+
+                if (tituloBuscado.Equals(
+                    tituloLibro,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    encontrado = true;
+
+                    if (libros[j].Prestar())
+                    {
+                        Console.WriteLine("Libro prestado correctamente.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("El libro ya esta prestado.");
+                    }
+
+                    break;
+                }
+            }
+
+            if (!encontrado)
+            {
+                Console.WriteLine("Libro no encontrado.");
+            }
+        }
+
+        Console.WriteLine("\n--- Estado final de los libros ---");
+
+        for (int i = 0; i < libros.Length; i = i + 1)
+        {
+            Console.WriteLine(libros[i].MostrarEstado());
         }
     }
 }
