@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// CLASE BASE
+// ==========================================
+// CLASE BASE: VEHICULO
+// ==========================================
 class Vehiculo
 {
     protected string placa;
@@ -23,11 +25,14 @@ class Vehiculo
 
     public void Mostrar()
     {
-        Console.WriteLine(Tipo() + " " + placa + ": " + CalcularPeaje() + " Bs");
+        Console.WriteLine(Tipo() + " " + placa + ": " +
+            CalcularPeaje() + " Bs");
     }
 }
 
+// ==========================================
 // CLASE HIJA: AUTO
+// ==========================================
 class Auto : Vehiculo
 {
     public Auto(string placa) : base(placa)
@@ -40,7 +45,9 @@ class Auto : Vehiculo
     }
 }
 
+// ==========================================
 // CLASE HIJA: MOTO
+// ==========================================
 class Moto : Vehiculo
 {
     public Moto(string placa) : base(placa)
@@ -58,7 +65,9 @@ class Moto : Vehiculo
     }
 }
 
+// ==========================================
 // CLASE HIJA: CAMION
+// ==========================================
 class Camion : Vehiculo
 {
     private int ejes;
@@ -79,6 +88,75 @@ class Camion : Vehiculo
     }
 }
 
+// ==========================================
+// CLASE BASE: CUENTA
+// ==========================================
+class Cuenta
+{
+    protected string titular;
+    protected int saldo;
+
+    public Cuenta(string titular, int saldo)
+    {
+        this.titular = titular;
+        this.saldo = saldo;
+    }
+
+    public virtual bool Retirar(int monto)
+    {
+        if (monto > 0 && saldo >= monto)
+        {
+            saldo = saldo - monto;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void IntentarRetiro(int monto)
+    {
+        bool aprobado = Retirar(monto);
+
+        if (aprobado)
+        {
+            Console.WriteLine(titular + ": retiro de " + monto +
+                " Bs aprobado. Saldo: " + saldo + " Bs");
+        }
+        else
+        {
+            Console.WriteLine(titular + ": retiro de " + monto +
+                " Bs rechazado. Saldo: " + saldo + " Bs");
+        }
+    }
+}
+
+// ==========================================
+// CLASE HIJA: CUENTA CORRIENTE
+// ==========================================
+class CuentaCorriente : Cuenta
+{
+    private int limiteSobregiro = 500;
+
+    public CuentaCorriente(string titular, int saldo)
+        : base(titular, saldo)
+    {
+    }
+
+    public override bool Retirar(int monto)
+    {
+        if (monto > 0 && saldo - monto >= -limiteSobregiro)
+        {
+            saldo = saldo - monto;
+            return true;
+        }
+
+        return false;
+    }
+}
+
+// ==========================================
+// PROGRAMA PRINCIPAL
+// ==========================================
 class Program
 {
     static void Main()
@@ -126,14 +204,17 @@ class Program
         } while (opcion != 0);
     }
 
+    // ==========================================
     // EJERCICIO 1: PEAJE DE VEHICULOS
+    // ==========================================
     static void Ejercicio1()
     {
         List<Vehiculo> vehiculos = new List<Vehiculo>();
 
         Console.Write("\nCuantos vehiculos pasaron? ");
 
-        if (!int.TryParse(Console.ReadLine(), out int cantidad) || cantidad <= 0)
+        if (!int.TryParse(Console.ReadLine(), out int cantidad)
+            || cantidad <= 0)
         {
             Console.WriteLine("Ingrese una cantidad valida.");
             return;
@@ -170,7 +251,8 @@ class Program
             {
                 Console.Write("Ingrese la cantidad de ejes: ");
 
-                if (!int.TryParse(Console.ReadLine(), out int ejes) || ejes <= 0)
+                if (!int.TryParse(Console.ReadLine(), out int ejes)
+                    || ejes <= 0)
                 {
                     Console.WriteLine("Cantidad de ejes no valida.");
                     i = i - 1;
@@ -194,13 +276,42 @@ class Program
         Console.WriteLine("Total recaudado: " + total + " Bs");
     }
 
-    // EJERCICIO 2: CUENTAS
+    // ==========================================
+    // EJERCICIO 2: CUENTAS BANCARIAS
+    // ==========================================
     static void Ejercicio2()
     {
-        Console.WriteLine("\nEjercicio 2 pendiente.");
+        Console.Write("\nIngrese el saldo inicial: ");
+
+        if (!int.TryParse(Console.ReadLine(), out int saldoInicial)
+            || saldoInicial < 0)
+        {
+            Console.WriteLine("Ingrese un saldo valido.");
+            return;
+        }
+
+        Console.Write("Ingrese el monto que desea retirar: ");
+
+        if (!int.TryParse(Console.ReadLine(), out int monto))
+        {
+            Console.WriteLine("Ingrese un monto valido.");
+            return;
+        }
+
+        Cuenta ahorro = new Cuenta("Ahorro", saldoInicial);
+
+        Cuenta corriente = new CuentaCorriente("Corriente", saldoInicial);
+
+        Console.WriteLine("\n--- Resultado de los retiros ---");
+
+        ahorro.IntentarRetiro(monto);
+
+        corriente.IntentarRetiro(monto);
     }
 
+    // ==========================================
     // EJERCICIO 3: JERARQUIA PROPIA
+    // ==========================================
     static void Ejercicio3()
     {
         Console.WriteLine("\nEjercicio 3 pendiente.");
