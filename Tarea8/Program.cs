@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ==========================================
-// CLASE BASE: VEHICULO
-// ==========================================
 class Vehiculo
 {
     protected string placa;
@@ -25,14 +22,11 @@ class Vehiculo
 
     public void Mostrar()
     {
-        Console.WriteLine(Tipo() + " " + placa + ": " +
-            CalcularPeaje() + " Bs");
+        Console.WriteLine(Tipo() + " " + placa +
+            ": " + CalcularPeaje() + " Bs");
     }
 }
 
-// ==========================================
-// CLASE HIJA: AUTO
-// ==========================================
 class Auto : Vehiculo
 {
     public Auto(string placa) : base(placa)
@@ -45,9 +39,6 @@ class Auto : Vehiculo
     }
 }
 
-// ==========================================
-// CLASE HIJA: MOTO
-// ==========================================
 class Moto : Vehiculo
 {
     public Moto(string placa) : base(placa)
@@ -65,9 +56,6 @@ class Moto : Vehiculo
     }
 }
 
-// ==========================================
-// CLASE HIJA: CAMION
-// ==========================================
 class Camion : Vehiculo
 {
     private int ejes;
@@ -88,9 +76,6 @@ class Camion : Vehiculo
     }
 }
 
-// ==========================================
-// CLASE BASE: CUENTA
-// ==========================================
 class Cuenta
 {
     protected string titular;
@@ -119,20 +104,17 @@ class Cuenta
 
         if (aprobado)
         {
-            Console.WriteLine(titular + ": retiro de " + monto +
-                " Bs aprobado. Saldo: " + saldo + " Bs");
+            Console.WriteLine(titular + ": retiro de " +
+                monto + " Bs aprobado. Saldo: " + saldo + " Bs");
         }
         else
         {
-            Console.WriteLine(titular + ": retiro de " + monto +
-                " Bs rechazado. Saldo: " + saldo + " Bs");
+            Console.WriteLine(titular + ": retiro de " +
+                monto + " Bs rechazado. Saldo: " + saldo + " Bs");
         }
     }
 }
 
-// ==========================================
-// CLASE HIJA: CUENTA CORRIENTE
-// ==========================================
 class CuentaCorriente : Cuenta
 {
     private int limiteSobregiro = 500;
@@ -154,28 +136,96 @@ class CuentaCorriente : Cuenta
     }
 }
 
-// ==========================================
-// PROGRAMA PRINCIPAL
-// ==========================================
+class EmpleadoRestaurante
+{
+    protected string nombre;
+    protected int sueldoBase;
+
+    public EmpleadoRestaurante(string nombre, int sueldoBase)
+    {
+        this.nombre = nombre;
+        this.sueldoBase = sueldoBase;
+    }
+
+    public virtual string Tipo()
+    {
+        return "Empleado";
+    }
+
+    public virtual int CalcularPago()
+    {
+        return sueldoBase;
+    }
+
+    public void Mostrar()
+    {
+        Console.WriteLine(Tipo() + ": " + nombre +
+            " - Pago: " + CalcularPago() + " Bs");
+    }
+}
+
+class Cocinero : EmpleadoRestaurante
+{
+    private int platosPreparados;
+
+    public Cocinero(string nombre, int sueldoBase, int platosPreparados)
+        : base(nombre, sueldoBase)
+    {
+        this.platosPreparados = platosPreparados;
+    }
+
+    public override string Tipo()
+    {
+        return "Cocinero";
+    }
+
+    public override int CalcularPago()
+    {
+        return sueldoBase + (platosPreparados * 2);
+    }
+}
+
+class Mesero : EmpleadoRestaurante
+{
+    private int mesasAtendidas;
+
+    public Mesero(string nombre, int sueldoBase, int mesasAtendidas)
+        : base(nombre, sueldoBase)
+    {
+        this.mesasAtendidas = mesasAtendidas;
+    }
+
+    public override string Tipo()
+    {
+        return "Mesero";
+    }
+
+    public override int CalcularPago()
+    {
+        return sueldoBase + (mesasAtendidas * 5);
+    }
+}
+
 class Program
 {
     static void Main()
     {
-        int opcion;
+        int opcion = -1;
 
         do
         {
-            Console.WriteLine();
-            Console.WriteLine("===== TAREA 8: HERENCIA Y POLIMORFISMO =====");
+            Console.WriteLine("\n===== MENU PRINCIPAL =====");
             Console.WriteLine("1. Peaje de vehiculos");
-            Console.WriteLine("2. Cuenta de ahorro y cuenta corriente");
-            Console.WriteLine("3. Mi propia jerarquia");
+            Console.WriteLine("2. Cuentas de ahorro y corriente");
+            Console.WriteLine("3. Jerarquia de empleados");
             Console.WriteLine("0. Salir");
-            Console.Write("Elige una opcion: ");
+            Console.Write("Seleccione una opcion: ");
 
             if (!int.TryParse(Console.ReadLine(), out opcion))
             {
+                Console.WriteLine("Ingrese una opcion valida.");
                 opcion = -1;
+                continue;
             }
 
             switch (opcion)
@@ -193,7 +243,7 @@ class Program
                     break;
 
                 case 0:
-                    Console.WriteLine("Hasta luego.");
+                    Console.WriteLine("Programa finalizado.");
                     break;
 
                 default:
@@ -204,23 +254,20 @@ class Program
         } while (opcion != 0);
     }
 
-    // ==========================================
-    // EJERCICIO 1: PEAJE DE VEHICULOS
-    // ==========================================
     static void Ejercicio1()
     {
         List<Vehiculo> vehiculos = new List<Vehiculo>();
 
-        Console.Write("\nCuantos vehiculos pasaron? ");
+        Console.Write("\nIngrese la cantidad de vehiculos: ");
 
         if (!int.TryParse(Console.ReadLine(), out int cantidad)
             || cantidad <= 0)
         {
-            Console.WriteLine("Ingrese una cantidad valida.");
+            Console.WriteLine("Cantidad no valida.");
             return;
         }
 
-        for (int i = 0; i < cantidad; i = i + 1)
+        for (int i = 0; i < cantidad; i++)
         {
             Console.WriteLine("\nVehiculo " + (i + 1));
             Console.WriteLine("1. Auto");
@@ -231,8 +278,8 @@ class Program
             if (!int.TryParse(Console.ReadLine(), out int tipo)
                 || tipo < 1 || tipo > 3)
             {
-                Console.WriteLine("Tipo no valido. Intente nuevamente.");
-                i = i - 1;
+                Console.WriteLine("Tipo no valido.");
+                i--;
                 continue;
             }
 
@@ -247,7 +294,7 @@ class Program
             {
                 vehiculos.Add(new Moto(placa));
             }
-            else if (tipo == 3)
+            else
             {
                 Console.Write("Ingrese la cantidad de ejes: ");
 
@@ -255,7 +302,7 @@ class Program
                     || ejes <= 0)
                 {
                     Console.WriteLine("Cantidad de ejes no valida.");
-                    i = i - 1;
+                    i--;
                     continue;
                 }
 
@@ -263,22 +310,19 @@ class Program
             }
         }
 
-        int total = 0;
+        Console.WriteLine("\n--- PEAJES ---");
 
-        Console.WriteLine("\n--- Vehiculos registrados ---");
+        int total = 0;
 
         foreach (Vehiculo vehiculo in vehiculos)
         {
             vehiculo.Mostrar();
-            total = total + vehiculo.CalcularPeaje();
+            total += vehiculo.CalcularPeaje();
         }
 
         Console.WriteLine("Total recaudado: " + total + " Bs");
     }
 
-    // ==========================================
-    // EJERCICIO 2: CUENTAS BANCARIAS
-    // ==========================================
     static void Ejercicio2()
     {
         Console.Write("\nIngrese el saldo inicial: ");
@@ -299,21 +343,99 @@ class Program
         }
 
         Cuenta ahorro = new Cuenta("Ahorro", saldoInicial);
-
         Cuenta corriente = new CuentaCorriente("Corriente", saldoInicial);
 
-        Console.WriteLine("\n--- Resultado de los retiros ---");
+        Console.WriteLine("\n--- RESULTADO DE LOS RETIROS ---");
 
         ahorro.IntentarRetiro(monto);
-
         corriente.IntentarRetiro(monto);
     }
 
-    // ==========================================
-    // EJERCICIO 3: JERARQUIA PROPIA
-    // ==========================================
     static void Ejercicio3()
     {
-        Console.WriteLine("\nEjercicio 3 pendiente.");
+        List<EmpleadoRestaurante> empleados =
+            new List<EmpleadoRestaurante>();
+
+        Console.Write("\nIngrese la cantidad de empleados: ");
+
+        if (!int.TryParse(Console.ReadLine(), out int cantidad)
+            || cantidad <= 0)
+        {
+            Console.WriteLine("Ingrese una cantidad valida.");
+            return;
+        }
+
+        for (int i = 0; i < cantidad; i++)
+        {
+            Console.WriteLine("\nEmpleado " + (i + 1));
+            Console.WriteLine("1. Cocinero");
+            Console.WriteLine("2. Mesero");
+            Console.Write("Seleccione el tipo: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int tipo)
+                || (tipo != 1 && tipo != 2))
+            {
+                Console.WriteLine("Tipo no valido.");
+                i--;
+                continue;
+            }
+
+            Console.Write("Ingrese el nombre: ");
+            string nombre = Console.ReadLine() ?? "";
+
+            Console.Write("Ingrese el sueldo base: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int sueldo)
+                || sueldo < 0)
+            {
+                Console.WriteLine("Sueldo no valido.");
+                i--;
+                continue;
+            }
+
+            if (tipo == 1)
+            {
+                Console.Write("Ingrese los platos preparados: ");
+
+                if (!int.TryParse(Console.ReadLine(), out int platos)
+                    || platos < 0)
+                {
+                    Console.WriteLine("Cantidad no valida.");
+                    i--;
+                    continue;
+                }
+
+                empleados.Add(
+                    new Cocinero(nombre, sueldo, platos));
+            }
+            else
+            {
+                Console.Write("Ingrese las mesas atendidas: ");
+
+                if (!int.TryParse(Console.ReadLine(), out int mesas)
+                    || mesas < 0)
+                {
+                    Console.WriteLine("Cantidad no valida.");
+                    i--;
+                    continue;
+                }
+
+                empleados.Add(
+                    new Mesero(nombre, sueldo, mesas));
+            }
+        }
+
+        Console.WriteLine("\n--- PAGOS DE EMPLEADOS ---");
+
+        int total = 0;
+
+        foreach (EmpleadoRestaurante empleado in empleados)
+        {
+            empleado.Mostrar();
+            total += empleado.CalcularPago();
+        }
+
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Total de pagos: " + total + " Bs");
     }
 }
